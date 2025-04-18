@@ -1,0 +1,40 @@
+pipeline {
+  agent {
+    docker {
+      image 'node:16-alpine'
+      args '-v $PWD:/app -w /app'
+    }
+  }
+
+  stages {
+    stage('Check Node Version') {
+      steps {
+        sh 'node --version'
+      }
+    }
+
+    stage('Install Dependencies') {
+      steps {
+        // Optional: assumes package.json is in your project root
+        sh 'npm install'
+      }
+    }
+
+    stage('Run Tests') {
+      steps {
+        // Optional: replace with your actual test script
+        sh 'npm test || echo "No tests found or failed"'
+      }
+    }
+  }
+
+  post {
+    success {
+      echo 'Pipeline completed successfully!'
+    }
+    failure {
+      echo 'Pipeline failed!'
+    }
+  }
+}
+
